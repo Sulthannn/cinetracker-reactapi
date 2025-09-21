@@ -14,11 +14,6 @@
 	--color-red-dark: #e03131;
 }
 
-@keyframes progress {
-	0% { width: 0%; }
-	100% { width: 100%; }
-}
-
 * {
 	margin: 0;
 	padding: 0;
@@ -143,12 +138,8 @@ body {
 .list {
 	list-style: none;
 	padding: 0.8rem 0;
-	overflow-y: scroll;
-    overflow-x: hidden;
-}
-
-.list-watched {
-	height: calc(100% - 9rem);
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .list li {
@@ -311,16 +302,6 @@ body {
 	background-color: var(--color-primary-light);
 }
 
-.seconds {
-	background-color: var(--color-background-100);
-	width: 8rem;
-	border-radius: 10rem;
-	font-weight: 600;
-	text-align: center;
-	padding: 0.4rem;
-	margin-top: 2.4rem;
-}
-
 .btn-back {
 	position: absolute;
 	top: 0.6rem;
@@ -364,4 +345,40 @@ body {
 	100% {
 		width: 100%;
 	}
+}
+
+.main > .box {
+	height: 100%;
+}
+
+.box .list {
+	max-height: calc(100vh - 7.2rem - 3 * 2.4rem - 2rem);
+}
+
+.btn-theme {
+	border: none;
+	padding: 0.6rem 0.9rem;
+	border-radius: 10rem;
+	background-color: var(--color-background-900);
+	color: var(--color-text);
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+.btn-theme:hover {
+	filter: brightness(1.1);
+}
+
+body.light {
+	--color-primary: #2563eb;
+	--color-primary-light: #3b82f6;
+	--color-text: #1f2937;
+	--color-text-dark: #4b5563;
+	--color-background-100: #e2e3e5;
+	--color-background-500: #dbdcdf;
+	--color-background-900: #cdd0d5;
+	--color-red: #ef4444;
+	--color-red-dark: #dc2626;
+	background-color: #afafaf;
+	color: #1f2937;
 }

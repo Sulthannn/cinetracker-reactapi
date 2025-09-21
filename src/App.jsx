@@ -15,11 +15,19 @@ function Logo() {
   );
 }
 
-function NumResults({ movies }) {
+function NumResults({ movies, dark, onToggleDark }) {
   return (
-    <p className="num-results">
-      There are <strong>{movies.length}</strong> results
-    </p>
+    <div className="num-results" style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifySelf: 'end' }}>
+      <p>There are <strong>{movies.length}</strong> results</p>
+      <button
+        onClick={onToggleDark}
+        className="btn-theme"
+        aria-label="Toggle theme"
+        title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+      >
+        {dark ? '☀️' : '🌙'}
+      </button>
+    </div>
   );
 }
 
@@ -273,13 +281,36 @@ function ErrorMessage({ message }) {
   );
 }
 
+function SkeletonList({ count = 8 }) {
+  return (
+    <ul className="list list-movies">
+      {Array.from({ length: count }).map((_, i) => (
+        <li key={i}>
+          <div className="w-full h-16 bg-slate-400/20 animate-pulse rounded" style={{ gridRow: '1 / -1' }}></div>
+          <div className="h-5 w-2/3 bg-slate-400/20 animate-pulse rounded"></div>
+          <div className="flex items-center gap-6">
+            <div className="h-4 w-24 bg-slate-400/20 animate-pulse rounded"></div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState("");
-  const [query, setQuery] = useState("avengers");
+  const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
+  const [dark, setDark] = useState(true);
+
+  useEffect(() => {
+    const body = document.body;
+    if (dark) body.classList.remove('light');
+    else body.classList.add('light');
+  }, [dark]);
 
   function handleAddWatched(movie) {
     setWatched((watched) => [...watched, movie]);
@@ -348,13 +379,19 @@ export default function App() {
       <Navbar>
         <Logo />
         <Search query={query} setQuery={setQuery} />
-        <NumResults movies={movies} />
+        <NumResults movies={movies} dark={dark} onToggleDark={() => setDark((d) => !d)} />
       </Navbar>
       <Main>
         <BoxMovies>
-          {isLoading && <Loader />}
+          {isLoading && !isError && <SkeletonList />}
           {!isLoading && !isError && (
-            <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
+            movies.length > 0 ? (
+              <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
+            ) : (
+              <div className="error" style={{ padding: '3.2rem' }}>
+                <span>🔎</span> Type the movie title in the search field
+              </div>
+            )
           )}
           {isError && <ErrorMessage message={isError} />}
         </BoxMovies>
