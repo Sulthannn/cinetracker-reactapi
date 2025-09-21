@@ -299,7 +299,15 @@ function SkeletonList({ count = 8 }) {
 
 export default function App() {
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+  const [watched, setWatched] = useState(() => {
+    try {
+      const raw = sessionStorage.getItem("watched");
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState("");
   const [query, setQuery] = useState("");
@@ -327,6 +335,13 @@ export default function App() {
   function handleCloseMovie() {
     setSelectedId(null);
   }
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("watched", JSON.stringify(watched));
+    } catch {
+    }
+  }, [watched]);
 
   useEffect(() => {
     const controller = new AbortController();
